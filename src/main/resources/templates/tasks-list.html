@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Infor Task Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Task Management Dashboard</h3>
+            <span class="badge bg-light text-primary" th:text="${'Total: ' + page.totalElements}">0</span>
+        </div>
+
+        <div class="card-body">
+            <form th:action="@{/tasks-page}" method="get" class="row g-3 mb-4">
+                <div class="col-auto">
+                    <select name="priority" class="form-select" onchange="this.form.submit()">
+                        <option value="" th:selected="${currentPriority == null}">All Priorities</option>
+                        <option th:each="p : ${T(com.infor.taskmanager.model.Priority).values()}"
+                                th:value="${p}" th:text="${p}"
+                                th:selected="${p == currentPriority}"></option>
+                    </select>
+                </div>
+            </form>
+
+            <table class="table table-hover">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Priority</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td th:text="${task.id}">1</td>
+                    <td th:text="${task.title}">Sample Task</td>
+                    <td>
+                            <span th:classappend="${task.priority.name() == 'HIGH' ? 'badge bg-danger' : (task.priority.name() == 'MEDIUM' ? 'badge bg-warning' : 'badge bg-info')}"
+                                  th:text="${task.priority}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <nav th:if="${page.totalPages > 1}">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${!page.hasPrevious()} ? 'disabled'">
+                        <a class="page-link" th:href="@{/tasks-page(page=${page.number - 1}, priority=${currentPriority})}">Previous</a>
+                    </li>
+
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                        th:classappend="${i == page.number} ? 'active'">
+                        <a class="page-link" th:href="@{/tasks-page(page=${i}, priority=${currentPriority})}" th:text="${i + 1}">1</a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${!page.hasNext()} ? 'disabled'">
+                        <a class="page-link" th:href="@{/tasks-page(page=${page.number + 1}, priority=${currentPriority})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
