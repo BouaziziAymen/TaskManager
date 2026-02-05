@@ -7,11 +7,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 public class DataInitializer {
 
     @Bean
-    CommandLineRunner initDatabase(TaskRepository taskRepository) {
+    CommandLineRunner initDatabase(TaskRepository taskRepository,GameProps props) {
+        System.out.println("a:"+props.a);
+        System.out.println("b:"+props.b);
         return args -> {
 
             for (int i = 0; i < 50; i++) {
